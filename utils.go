@@ -230,11 +230,12 @@ func DefaultStoreOptions(rootless bool, rootlessUID int) (StoreOptions, error) {
 			}
 			if storageOpts.GraphRoot == "" {
 				storageOpts.GraphRoot = defaultRootlessGraphRoot
-			} else if storageOpts.RootlessStoragePath != "" {
+			}
+			if storageOpts.RootlessStoragePath != "" {
 				splitPaths := strings.SplitAfter(storageOpts.RootlessStoragePath, "$")
-				validEnv := regexp.MustCompile(`^(HOME|USER|UID)[^a-zA-Z]`).MatchString
+				validEnv := regexp.MustCompile(`^(HOME|USER|UID)([^a-zA-Z]|$)`).MatchString
 				if len(splitPaths) > 1 {
-					for _, path := range splitPaths {
+					for _, path := range splitPaths[1:] {
 						if !validEnv(path) {
 							return storageOpts, errors.Errorf("Unrecognized environment variable")
 						}
