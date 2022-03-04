@@ -15,6 +15,12 @@ import (
 // enable debug printing
 const debug = false
 
+// enable encoding debug printing
+const debugEncoder = debug
+
+// enable decoding debug printing
+const debugDecoder = debug
+
 // Enable extra assertions.
 const debugAsserts = debug || false
 
@@ -69,6 +75,10 @@ var (
 	// This is only returned if SingleSegment is specified on the frame.
 	ErrFrameSizeExceeded = errors.New("frame size exceeded")
 
+	// ErrFrameSizeMismatch is returned if the stated frame size does not match the expected size.
+	// This is only returned if SingleSegment is specified on the frame.
+	ErrFrameSizeMismatch = errors.New("frame size does not match size on stream")
+
 	// ErrCRCMismatch is returned if CRC mismatches.
 	ErrCRCMismatch = errors.New("CRC check failed")
 
@@ -82,13 +92,13 @@ var (
 )
 
 func println(a ...interface{}) {
-	if debug {
+	if debug || debugDecoder || debugEncoder {
 		log.Println(a...)
 	}
 }
 
 func printf(format string, a ...interface{}) {
-	if debug {
+	if debug || debugDecoder || debugEncoder {
 		log.Printf(format, a...)
 	}
 }
